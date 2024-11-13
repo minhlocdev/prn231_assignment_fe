@@ -21,6 +21,11 @@ const SlotSuggestion = ({ selectedCourt }) => {
               <Card size="small" title="Slot">
                 <Descriptions
                   bordered
+                  className={`${
+                    slot.status === "Inactive"
+                      ? "border border-red-500 bg-red-50/40"
+                      : "border border-green-500 bg-green-50/40"
+                  }`}
                   items={[
                     {
                       key: "1",
@@ -38,7 +43,11 @@ const SlotSuggestion = ({ selectedCourt }) => {
                       key: "3",
                       label: "Status",
                       span: 3,
-                      children: slot.status,
+                      children: <span className={`${
+                        slot.status === "Inactive"
+                          ? "text-red-500 font-semibold"
+                          : "text-green-500 font-semibold"
+                      }`}>{slot.status}</span>,
                     },
                   ]}
                 />
