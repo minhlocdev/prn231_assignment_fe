@@ -8,8 +8,8 @@ const LoginPage = () => {
   const { theme } = useTheme();
 
   const loginBackgrounds = {
-    CourtOwner: "/src/assets/login-background.png",
-    User: "/src/assets/login-user-background.png",
+    CourtOwner: "/login-background.png",
+    User: "/login-user-background.png",
   };
 
   const loginImage = {
