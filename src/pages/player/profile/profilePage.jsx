@@ -3,8 +3,8 @@ import { Form, Input, Button, notification, Spin } from "antd";
 import dayjs from "dayjs";
 import useAuth from "../../../hooks/useAuth";
 import AvatarUploader from "../../../components/local/avatarUploader";
-import { getUser } from "../../../utils/services/queries/userQuery";
-import { useQuery } from "@tanstack/react-query";
+import { getUser, putUser } from "../../../utils/services/queries/userQuery";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -22,13 +22,32 @@ const ProfilePage = () => {
   };
 
   // Handle form submission
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["update-user"],
+    mutationFn: putUser,
+    onSuccess: () => {
+      notification.success({
+        message: "Profile Updated",
+        description: "Your profile has been updated successfully!",
+      });
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Error",
+        description:
+          error.message || "An error occurred while updating the profile.",
+      });
+    },
+  });
   const handleSubmit = async (values) => {
-    console.log("Form values:", values);
-    notification.success({
-      message: "Profile Updated",
-      description: "Your profile has been updated successfully!",
-    });
-    setIsChanged(false); // Reset change state after saving
+    const email = values.email;
+    const updateParam = {
+      fullName: values.fullName,
+      phoneNumber: values.phoneNumber,
+    };
+
+    await mutate({ email, updateParam });
+    setIsChanged(false);
   };
 
   if (isLoading) {
@@ -47,11 +66,6 @@ const ProfilePage = () => {
         layout="vertical"
         onFinish={handleSubmit}
         onValuesChange={handleFormChange}
-        initialValues={{
-          fullName: user?.fullName,
-          email: user?.email,
-          phoneNumber: user?.phoneNumber,
-        }}
       >
         <Form.Item label="Avatar">
           <AvatarUploader />
@@ -62,11 +76,11 @@ const ProfilePage = () => {
           name="fullName"
           initialValue={user?.fullName}
         >
-          <Input />
+          <Input disabled={isPending} />
         </Form.Item>
 
         <Form.Item label="Email" name="email" initialValue={user?.email}>
-          <Input />
+          <Input disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -74,7 +88,7 @@ const ProfilePage = () => {
           name="phoneNumber"
           initialValue={user?.phoneNumber}
         >
-          <Input />
+          <Input disabled={isPending} />
         </Form.Item>
 
         <Form.Item label="Date Created">
@@ -82,8 +96,12 @@ const ProfilePage = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={!isChanged}>
-            Save Changes
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={!isChanged || isPending}
+          >
+            {isPending ? "Updating..." : "Save Changes"}
           </Button>
         </Form.Item>
       </Form>
