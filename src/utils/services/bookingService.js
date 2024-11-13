@@ -9,8 +9,8 @@ export const useFetchBookings = (
   bookingFilterDto,
   sortField,
   sortValue,
-  pageNumber,
-  pageSize
+  pageNumber = 1,
+  pageSize = 5
 ) => {
   return useQuery({
     queryKey: [
@@ -34,7 +34,6 @@ export const useFetchBookings = (
         pageSize
       ),
     placeholderData: keepPreviousData,
-    refetchOnWindowFocus: true,
   });
 };
 

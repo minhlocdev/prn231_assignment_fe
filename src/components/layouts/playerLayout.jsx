@@ -8,6 +8,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   DollarCircleOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { useState } from "react";
@@ -42,10 +43,16 @@ const items = [
         icon: <CheckCircleOutlined />,
         label: <Link to={"/player/activities/done"}>Done</Link>,
       },
+
+      {
+        key: "5",
+        icon: <CloseCircleOutlined />,
+        label: <Link to={"/player/activities/cancelled"}>Cancelled</Link>,
+      },
     ],
   },
   {
-    key: "5",
+    key: "6",
     icon: <TeamOutlined />,
     label: <Link to={"/player/teams"}>Teams</Link>,
   },
@@ -55,12 +62,12 @@ const items = [
     type: "group",
     children: [
       {
-        key: "6",
+        key: "7",
         icon: <MoneyCollectOutlined />,
         label: <Link to={"/player/payments"}>Payments</Link>,
       },
       {
-        key: "7",
+        key: "8",
         icon: <DollarCircleOutlined />,
         label: <Link to={"/player/billings"}>Billings</Link>,
       },

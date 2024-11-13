@@ -27,3 +27,4 @@ export const POST_PAYMENT_ENDPOINT = '/payments';
 export const GET_PAYMENT_DETAIL_ENDPOINT = '/payments/'; 
 export const DELETE_PAYMENT_ENDPOINT = '/payments/'; 
 
+export const GET_USER_ID_ENDPOINT = '/user/'

@@ -15,6 +15,9 @@ import PaymentCancelled from "./pages/payment/paymentCancelled";
 import PendingPage from "./pages/player/bookings/pendingPage";
 import OnGoingPage from "./pages/player/bookings/onGoingPage";
 import DonePage from "./pages/player/bookings/donePage";
+import ProfilePage from "./pages/player/profile/profilePage";
+import BookingDetail from "./pages/player/bookings/bookingDetail";
+import CancelledPage from "./pages/player/bookings/cancelPage";
 
 function App() {
   return (
@@ -55,6 +58,10 @@ function App() {
               element={<PaymentPage />}
             />
             <Route
+              path="/player/bookings/:bookingId"
+              element={<BookingDetail />}
+            />
+            <Route
               path="/player/payment/success"
               element={<PaymentSuccess />}
             />
@@ -71,9 +78,14 @@ function App() {
               element={<OnGoingPage />}
             />
             <Route path="/player/activities/done" element={<DonePage />} />
+            <Route
+              path="/player/activities/cancelled"
+              element={<CancelledPage />}
+            />
             <Route path="/player/teams" element={<HomePage />} />
             <Route path="/player/payments" element={<HomePage />} />
             <Route path="/player/billings" element={<HomePage />} />
+            <Route path="/player/profile" element={<ProfilePage />} />
           </Route>
           <Route
             path="/owner/"

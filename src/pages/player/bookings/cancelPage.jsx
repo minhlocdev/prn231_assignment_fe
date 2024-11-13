@@ -1,12 +1,12 @@
 import BookingsCalendarView from "./bookingsCalendarView";
 
-const DonePage = () => {
+const CancelledPage = () => {
   // UnPaid = 0,
   // Reserved = 1,
   // Completed = 2,
   // Cancelled = 3,
 
-  return <BookingsCalendarView status={"Completed"} />;
+  return <BookingsCalendarView status={"Cancelled"} />;
 };
 
-export default DonePage;
+export default CancelledPage;
