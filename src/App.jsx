@@ -9,6 +9,12 @@ import OwnerLayout from "./components/layouts/ownerLayout";
 import BookingPage from "./pages/player/book-field/bookingPage";
 import SignUpPage from "./pages/register/signUpPage";
 import ProtectedRoute from "./components/hoc/protectedRoute";
+import PaymentPage from "./pages/payment/paymentPage";
+import PaymentSuccess from "./pages/payment/paymentSuccess";
+import PaymentCancelled from "./pages/payment/paymentCancelled";
+import PendingPage from "./pages/player/bookings/pendingPage";
+import OnGoingPage from "./pages/player/bookings/onGoingPage";
+import DonePage from "./pages/player/bookings/donePage";
 
 function App() {
   return (
@@ -43,9 +49,28 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/player/activities/pending" element={<HomePage />} />
-            <Route path="/player/activities/ongoing" element={<HomePage />} />
-            <Route path="/player/activities/done" element={<HomePage />} />
+
+            <Route
+              path="/player/payment/:bookingId"
+              element={<PaymentPage />}
+            />
+            <Route
+              path="/player/payment/success"
+              element={<PaymentSuccess />}
+            />
+            <Route
+              path="/player/payment/cancelled"
+              element={<PaymentCancelled />}
+            />
+            <Route
+              path="/player/activities/pending"
+              element={<PendingPage />}
+            />
+            <Route
+              path="/player/activities/ongoing"
+              element={<OnGoingPage />}
+            />
+            <Route path="/player/activities/done" element={<DonePage />} />
             <Route path="/player/teams" element={<HomePage />} />
             <Route path="/player/payments" element={<HomePage />} />
             <Route path="/player/billings" element={<HomePage />} />

@@ -1,6 +1,10 @@
 import queryString from "query-string";
 import axiosClient from "../../configuration/axiosClient";
-import { GET_BOOKINGS, POST_BOOKING } from "../../constants/endpoints";
+import {
+  GET_BOOKING,
+  GET_BOOKINGS,
+  POST_BOOKING,
+} from "../../constants/endpoints";
 
 export const getBookings = async (
   subject,
@@ -42,10 +46,21 @@ export const getBookings = async (
   };
 };
 
+export const getBooking = async (bookingId) => {
+  const response = await axiosClient.get(`${GET_BOOKING}/${bookingId}`);
+
+  return {
+    isSuccess: response.data.isSuccess,
+    message: response.data.message,
+    result: response.data.result || {},
+  };
+};
+
 export const postBookings = async (booking) => {
   const response = await axiosClient.post(`${POST_BOOKING}`, booking);
 
   return {
+    result: response.data.result,
     isSuccess: response.data.isSuccess,
     message: response.data.message,
   };

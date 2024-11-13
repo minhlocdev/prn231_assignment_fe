@@ -35,7 +35,7 @@ const items = [
       {
         key: "3",
         icon: <FieldTimeOutlined />,
-        label: <Link to={"/player/activities/ongoing"}>Ongoing</Link>,
+        label: <Link to={"/player/activities/ongoing"}>On going</Link>,
       },
       {
         key: "4",
