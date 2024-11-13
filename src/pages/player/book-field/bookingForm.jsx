@@ -8,151 +8,188 @@ import {
   Row,
   Col,
 } from "antd";
+import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import useAuth from "../../../hooks/useAuth";
+import { useForm } from "antd/es/form/Form";
+import {
+  validateDate,
+  validateNumberOfPlayers,
+  validateTimeDifference,
+} from "../../../utils/helpers/validator";
+import {
+  convertDateToDateOnlyString,
+  convertDateToTimeOnlyString,
+  roundToNearestHalfHour,
+} from "../../../utils/helpers/dateFormat";
+import { useCreateBooking } from "../../../utils/services/bookingService";
 
 const { Option } = Select;
 
-const BookingForm = () => {
+const BookingForm = ({ selectedCourt }) => {
   const { user } = useAuth();
+  const [bookingForm] = useForm();
 
+  const createBookingMutation = useCreateBooking();
   const onFinish = (values) => {
-    console.log("Received values:", values);
+    const param = {
+      ...values,
+      courtId: selectedCourt.courtId,
+      timeStart: convertDateToTimeOnlyString(values.timeStart),
+      timeEnd: convertDateToTimeOnlyString(values.timeEnd),
+      date: convertDateToDateOnlyString(values.date),
+    };
+    createBookingMutation.mutate(param);
   };
-
   return (
     <Form
+      form={bookingForm}
       name="booking_form"
       onFinish={onFinish}
       layout="vertical"
       initialValues={{
         date: dayjs(new Date()),
-        timeStart: dayjs(new Date()),
-        timeEnd: dayjs().add(1, "hour"),
-        userId: user.userId,
+        timeStart: roundToNearestHalfHour(dayjs(new Date())),
+        timeEnd: roundToNearestHalfHour(dayjs().add(1, "hour")),
+        userId: user?.userId,
+        numberOfPlayers: 2,
+        sharingMode: "public",
+        note: "",
       }}
     >
-      <Form.Item
-        label="Court ID"
-        name="courtId"
-        hidden="true"
-        rules={[{ required: true, message: "Please input the court ID!" }]}
-      >
-        <Input type="hidden" placeholder="Enter Court ID" />
-      </Form.Item>
-
-      <Form.Item
-        label="User ID"
-        name="userId"
-        hidden="true"
-        rules={[{ required: true, message: "Please input your user ID!" }]}
-      >
+      {!selectedCourt && (
+        <div style={{ color: "red" }}>Please choose court!</div>
+      )}
+      <Form.Item label="User ID" name="userId" hidden="true">
         <Input type="hidden" placeholder="Enter User ID" />
       </Form.Item>
-      <Row
-        gutter={{
-          xs: 8,
-          md: 16,
-          lg: 32,
-        }}
-      >
+      <Row gutter={{ xs: 8, md: 16, lg: 32 }}>
         <Col
           className="gutter-row"
           xs={{ span: 24 }}
           sm={{ span: 12 }}
           lg={{ span: 4 }}
         >
-          <div>
-            <Form.Item
-              label="Date"
-              name="date"
-              rules={[{ required: true, message: "Please select a date!" }]}
-            >
-              <DatePicker />
-            </Form.Item>
-          </div>
+          <Form.Item
+            label="Date"
+            name="date"
+            rules={[
+              { required: true, message: "Please select a date!" },
+              { validator: validateDate },
+            ]}
+          >
+            <DatePicker minDate={dayjs(Date.now())} />
+          </Form.Item>
         </Col>
+
         <Col
           className="gutter-row"
           xs={{ span: 24 }}
           sm={{ span: 12 }}
           lg={{ span: 4 }}
         >
-          <div>
-            <Form.Item
-              label="Start Time"
-              name={["timeStart"]}
-              rules={[{ required: true, message: "Please select start time!" }]}
-            >
-              <TimePicker format="HH:mm" />
-            </Form.Item>
-          </div>
-        </Col>
-        <Col
-          className="gutter-row"
-          xs={{ span: 24 }}
-          sm={{ span: 12 }}
-          lg={{ span: 4 }}
-        >
-          <div>
-            <Form.Item
-              label="End Time"
-              name={["timeEnd"]}
-              rules={[{ required: true, message: "Please select end time!" }]}
-            >
-              <TimePicker format="HH:mm" />
-            </Form.Item>
-          </div>
-        </Col>
-        <Col
-          className="gutter-row"
-          xs={{ span: 24 }}
-          sm={{ span: 12 }}
-          lg={{ span: 4 }}
-        >
-          <div>
-            <Form.Item
-              label="Number of Players"
-              name="numberOfPlayers"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the number of players!",
+          <Form.Item
+            label="Start Time"
+            name={["timeStart"]}
+            rules={[
+              { required: true, message: "Please select start time!" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  // Check if value is undefined or null
+                  if (!value) {
+                    return Promise.reject(
+                      new Error("Please select start time!")
+                    );
+                  }
+
+                  // Get the current date and time
+                  const date = getFieldValue("date");
+                  const selectedTime = dayjs(value);
+
+                  // Check if the selected time is today and in the past
+                  if (
+                    selectedTime.isSame(date, "day") &&
+                    selectedTime.isBefore(date)
+                  ) {
+                    return Promise.reject(
+                      new Error(
+                        "Invalid time! Start time cannot be in the past."
+                      )
+                    );
+                  }
+
+                  // If validation passes
+                  return Promise.resolve();
                 },
-              ]}
-            >
-              <Input type="number" placeholder="Enter Number of Players" />
-            </Form.Item>
-          </div>
+              }),
+            ]}
+          >
+            <TimePicker format="HH:mm" minuteStep={30} />
+          </Form.Item>
         </Col>
+
         <Col
           className="gutter-row"
           xs={{ span: 24 }}
           sm={{ span: 12 }}
           lg={{ span: 4 }}
         >
-          <div>
-            {" "}
-            <Form.Item
-              label="Sharing Mode"
-              name="sharingMode"
-              rules={[
-                { required: true, message: "Please select sharing mode!" },
-              ]}
-            >
-              <Select placeholder="Select Sharing Mode">
-                <Option value="public">Public</Option>
-                <Option value="private">Private</Option>
-                {/* Add more options as needed */}
-              </Select>
-            </Form.Item>
-          </div>
+          <Form.Item
+            label="End Time"
+            name={["timeEnd"]}
+            rules={[
+              { required: true, message: "Please select end time!" },
+              { validator: validateTimeDifference(bookingForm.getFieldValue) },
+            ]}
+          >
+            <TimePicker format="HH:mm" minuteStep={30} />
+          </Form.Item>
+        </Col>
+
+        <Col
+          className="gutter-row"
+          xs={{ span: 24 }}
+          sm={{ span: 12 }}
+          lg={{ span: 4 }}
+        >
+          <Form.Item
+            label="Number of Players"
+            name="numberOfPlayers"
+            rules={[
+              {
+                required: true,
+                message: "Please input the number of players!",
+              },
+              { validator: validateNumberOfPlayers },
+            ]}
+          >
+            <Input type="number" placeholder="Number of Players" min={2} />
+          </Form.Item>
+        </Col>
+
+        <Col
+          className="gutter-row"
+          xs={{ span: 24 }}
+          sm={{ span: 12 }}
+          lg={{ span: 4 }}
+        >
+          <Form.Item
+            label="Sharing Mode"
+            name="sharingMode"
+            rules={[{ required: true, message: "Please select sharing mode!" }]}
+          >
+            <Select placeholder="Select Sharing Mode">
+              <Option value="public">Public</Option>
+              <Option value="private">Private</Option>
+              <Option value="team">Team</Option>
+              {/* Add more options as needed */}
+            </Select>
+          </Form.Item>
         </Col>
       </Row>
       <Form.Item label="Note" name="note">
         <Input.TextArea placeholder="Add any notes here..." />
       </Form.Item>
-
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Submit Booking
@@ -160,6 +197,10 @@ const BookingForm = () => {
       </Form.Item>
     </Form>
   );
+};
+
+BookingForm.propTypes = {
+  selectedCourt: PropTypes.object,
 };
 
 export default BookingForm;

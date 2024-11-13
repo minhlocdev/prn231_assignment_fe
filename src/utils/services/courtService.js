@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getCourts } from "./queries/courtQuery";
+import { getCourt, getCourts } from "./queries/courtQuery";
 
 export const useFetchPlayerCourts = (
   courtFilterDto,
@@ -57,5 +57,13 @@ export const useFetchOwnerCourts = (
       ),
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: true,
+  });
+};
+
+export const useFetchCourt = (courtId) => {
+  return useQuery({
+    queryKey: ["court", courtId],
+    queryFn: () => getCourt(courtId),
+    enabled: !!courtId,
   });
 };

@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
+import PropTypes from "prop-types";
 import { SearchOutlined } from "@ant-design/icons";
-import { Table, Pagination, Button, Input, Space } from "antd";
+import { Table, Pagination, Button, Input, Space, notification } from "antd";
 import { useFetchPlayerCourts } from "../../../utils/services/courtService";
 import Highlighter from "react-highlight-words";
 
-export const CourtTable = () => {
+export const CourtTable = ({ selectedCourt, handleSelectCourt }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 1;
 
@@ -14,6 +15,9 @@ export const CourtTable = () => {
   const [order, setOrder] = useState("");
   const searchInput = useRef(null);
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState([
+    selectedCourt?.courtId,
+  ]);
   const {
     data: courtsData,
     isLoading,
@@ -177,21 +181,19 @@ export const CourtTable = () => {
     },
   ];
   const rowSelection = {
+    selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      handleSelectCourt(selectedRows[0]);
+      setSelectedRowKeys(selectedRowKeys);
     },
   };
   const onChange = (pagination, filters, sorter) => {
-    console.log("params", sorter);
     setFilterField(sorter.columnKey);
     setOrder(sorter.order == "ascend" ? "asc" : "desc");
   };
   return (
     <div>
+      {!courtsData.isSuccess && notification.error(courtsData.message)}
       <Table
         rowSelection={{
           type: "radio",
@@ -213,4 +215,9 @@ export const CourtTable = () => {
       />
     </div>
   );
+};
+
+CourtTable.propTypes = {
+  selectedCourt: PropTypes.object, // Adjust based on your court object structure
+  handleSelectCourt: PropTypes.func.isRequired,
 };
