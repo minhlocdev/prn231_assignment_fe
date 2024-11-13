@@ -16,6 +16,11 @@ function App() {
       <Router>
         <Routes>
           <Route
+            path="/"
+            element={<LoginPage />}
+            errorElement={<ErrorPage />}
+          />
+          <Route
             path="/login"
             element={<LoginPage />}
             errorElement={<ErrorPage />}
