@@ -1,4 +1,4 @@
-import { Dropdown, Space } from "antd";
+import { Avatar, Dropdown, Space } from "antd";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import useAuth from "../../hooks/useAuth";
 
@@ -25,7 +25,13 @@ const UserDropdown = () => {
       >
         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
           <Space className="pe-6">
-            Hello, {user?.fullName ?? ""} <span className="down-arrow"> ▼</span>
+            <div className="w-full flex gap-x-3 items-center">
+              <Avatar src={user?.avatar} />
+              <p>
+                Hello, {user?.fullName}
+                <span className="down-arrow"> ▼</span>
+              </p>
+            </div>
           </Space>
         </a>
       </Dropdown>

@@ -7,7 +7,7 @@ import Highlighter from "react-highlight-words";
 
 export const CourtTable = ({ selectedCourt, handleSelectCourt }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 1;
+  const pageSize = 5;
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -34,7 +34,6 @@ export const CourtTable = ({ selectedCourt, handleSelectCourt }) => {
   );
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    console.log(selectedKeys, dataIndex);
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -193,7 +192,8 @@ export const CourtTable = ({ selectedCourt, handleSelectCourt }) => {
   };
   return (
     <div>
-      {!courtsData.isSuccess && notification.error(courtsData.message)}
+      {!courtsData.isSuccess &&
+        notification.error({ message: courtsData.message })}
       <Table
         rowSelection={{
           type: "radio",
