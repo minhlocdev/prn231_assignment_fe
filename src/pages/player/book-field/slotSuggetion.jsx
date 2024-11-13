@@ -1,7 +1,7 @@
 import { Card, Col, Descriptions, Row, Spin } from "antd";
 import { useFetchCourt } from "../../../utils/services/courtService";
 import PropTypes from "prop-types";
-const CourtSlotSuggestion = ({ selectedCourt }) => {
+const SlotSuggestion = ({ selectedCourt }) => {
   const { data: courtDetail, isLoading: detailLoading } = useFetchCourt(
     selectedCourt?.courtId
   );
@@ -51,8 +51,8 @@ const CourtSlotSuggestion = ({ selectedCourt }) => {
   );
 };
 
-CourtSlotSuggestion.propTypes = {
+SlotSuggestion.propTypes = {
   selectedCourt: PropTypes.object,
 };
 
-export default CourtSlotSuggestion;
+export default SlotSuggestion;

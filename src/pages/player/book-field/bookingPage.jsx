@@ -2,7 +2,7 @@ import { useState } from "react";
 import HelmetTitle from "../../../components/hoc/helmetTitle";
 import BookingForm from "./bookingForm";
 import { CourtTable } from "./courtTable";
-import CourtSlotSuggestion from "./courtSLotSuggetion";
+import SlotSuggestion from "./slotSuggetion";
 
 const BookingPage = () => {
   const [selectedCourt, setSelectedCourt] = useState();
@@ -15,7 +15,7 @@ const BookingPage = () => {
         handleSelectCourt={setSelectedCourt}
       />
 
-      <CourtSlotSuggestion selectedCourt={selectedCourt} />
+      <SlotSuggestion selectedCourt={selectedCourt} />
       <BookingForm selectedCourt={selectedCourt} />
     </>
   );
