@@ -16,8 +16,8 @@ const PaymentPage = () => {
       bookingId: bookingId,
       userId: user?.userId,
       type: "banking",
-      successUrl: "",
-      cancelUrl: "",
+      successUrl: "https://court-booking-one.vercel.app/player/payment/success",
+      cancelUrl: "https://court-booking-one.vercel.app/cancelled",
     };
     console.log("Create payment");
     const response = await createPaymentLink(param);

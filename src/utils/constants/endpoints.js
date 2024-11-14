@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:5219/api";
+export const API_BASE_URL = "https://courtbookingsystem.azurewebsites.net/api/";
 
 export const LOGIN_ENDPOINT = "/auth/login";
 export const REGISTER_ENDPOINT = "/auth/register";

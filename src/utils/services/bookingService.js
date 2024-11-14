@@ -56,7 +56,7 @@ export const useCreateBooking = () => {
           message: "Booking Successful",
           description: "Go to payment page...!",
         });
-        navigate(`/payment/${data.result.bookingId}`);
+        navigate(`/player/payment/${data.result.bookingId}`);
       } else {
         notification.error({
           message: "Booking Failed",
@@ -85,7 +85,7 @@ export const useUpdateBooking = () => {
           message: "Update Booking Successful",
           description: "Go to payment page...!",
         });
-        navigate(`/payment/${data.result.bookingId}`);
+        navigate(`/player/payment/${data.result.bookingId}`);
       } else {
         notification.error({
           message: "Update Booking Failed",
@@ -147,7 +147,7 @@ export const useFetchBookingApplier = (bookingId) => {
 
 export const usePostApplier = () => {
   return useMutation({
-    mutationKey:["enroll"],
+    mutationKey: ["enroll"],
     mutationFn: postApplier,
     onSuccess: (data) => {
       if (data.isSuccess) {
@@ -175,7 +175,7 @@ export const usePostApplier = () => {
 
 export const usePutApplier = () => {
   return useMutation({
-    mutationKey:["unenroll"],
+    mutationKey: ["unenroll"],
     mutationFn: putApplier,
     onSuccess: (data) => {
       if (data.isSuccess) {
