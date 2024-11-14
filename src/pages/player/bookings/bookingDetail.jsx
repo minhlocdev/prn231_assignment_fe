@@ -3,6 +3,7 @@ import {
   useDeleteBooking,
   useFetchBooking,
   useFetchBookingApplier,
+  usePostApplier,
   usePutApplier,
 } from "../../../utils/services/bookingService";
 import { useFetchCourt } from "../../../utils/services/courtService";
@@ -36,6 +37,7 @@ const BookingDetail = () => {
   };
   const [userToKick, setUserToKick] = useState(null);
   const { mutate: kickUser } = usePutApplier();
+  const { mutate: postApplier } = usePostApplier();
   const handleOkKick = async () => {
     if (userToKick) {
       kickUser({ bookingId: bookingId, userId: userToKick });
@@ -198,7 +200,14 @@ const BookingDetail = () => {
                   gap: "20px",
                 }}
               >
-                <Button type="primary">Enroll this match</Button>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    postApplier({ bookingId: bookingId, userId: user.userId });
+                  }}
+                >
+                  Enroll this match
+                </Button>
               </div>
             )
           )}
