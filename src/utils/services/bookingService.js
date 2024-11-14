@@ -2,8 +2,11 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteBooking,
   getBooking,
+  getBookingAppliers,
   getBookings,
+  postApplier,
   postBookings,
+  putApplier,
   updateBookings,
 } from "./queries/bookingQuery";
 import { notification } from "antd";
@@ -96,7 +99,8 @@ export const useUpdateBooking = () => {
       notification.error({
         message: "Update Booking Failed",
         description:
-          error.response?.data?.message || "An error occurred during Update Booking.",
+          error.response?.data?.message ||
+          "An error occurred during Update Booking.",
       });
     },
   });
@@ -124,6 +128,72 @@ export const useDeleteBooking = () => {
 
       notification.error({
         message: "Booking Failed",
+        description:
+          error.response?.data?.message || "An error occurred during Booking.",
+      });
+    },
+  });
+};
+
+export const useFetchBookingApplier = (bookingId) => {
+  return useQuery({
+    queryKey: ["booking-applier", bookingId],
+    queryFn: () => getBookingAppliers(bookingId),
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: true,
+    enabled: !!bookingId,
+  });
+};
+
+export const usePostApplier = () => {
+  return useMutation({
+    mutationKey:["enroll"],
+    mutationFn: postApplier,
+    onSuccess: (data) => {
+      if (data.isSuccess) {
+        notification.success({
+          message: "Invite Successful",
+        });
+      } else {
+        notification.error({
+          message: "Invite Failed",
+          description: data.message,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("Invite failed:", error);
+
+      notification.error({
+        message: "Invite Failed",
+        description:
+          error.response?.data?.message || "An error occurred during Booking.",
+      });
+    },
+  });
+};
+
+export const usePutApplier = () => {
+  return useMutation({
+    mutationKey:["unenroll"],
+    mutationFn: putApplier,
+    onSuccess: (data) => {
+      if (data.isSuccess) {
+        notification.success({
+          message: "Kick Successful",
+        });
+      } else {
+        notification.error({
+          message: "Kick Failed",
+          description: data.message,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("Kick failed:", error);
+
+      notification.error({
+        message: "Kick Failed",
         description:
           error.response?.data?.message || "An error occurred during Booking.",
       });

@@ -1,63 +1,96 @@
-import React from "react";
 import {
-  AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
+  CalendarOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  MoneyCollectOutlined,
+  DollarCircleOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
-import { Outlet } from "react-router-dom";
+import { Button, Layout, Menu, theme } from "antd";
+import { useState } from "react";
+import { Outlet, Link } from "react-router-dom"; // Import Link here
+import UserDropdown from "./userDropdown";
+
 const { Header, Content, Footer, Sider } = Layout;
-const siderStyle = {
-  overflow: "auto",
-  height: "100vh",
-  position: "fixed",
-  insetInlineStart: 0,
-  top: 0,
-  bottom: 0,
-  scrollbarWidth: "thin",
-  scrollbarGutter: "stable",
-};
+
 const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  ShopOutlined,
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `nav ${index + 1}`,
-}));
+  {
+    key: "1",
+    icon: <CalendarOutlined />,
+    label: <Link to={"/owner/courts"}>Manage courts</Link>,
+  },
+  {
+    key: "g1",
+    label: "Activities",
+    type: "group",
+    children: [
+      {
+        key: "2",
+        icon: <ClockCircleOutlined />,
+        label: <Link to={"/owner/bookings"}>Booking Schedule</Link>,
+      },
+    ],
+  },
+  {
+    key: "g2",
+    label: "Payments",
+    type: "group",
+    children: [
+      {
+        key: "3",
+        icon: <MoneyCollectOutlined />,
+        label: <Link to={"/owner/payments"}>Payments</Link>,
+      },
+      {
+        key: "4",
+        icon: <DollarCircleOutlined />,
+        label: <Link to={"/owner/billings"}>Billings</Link>,
+      },
+    ],
+  },
+];
+
 const OwnerLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
   return (
     <Layout>
-      <Sider breakpoint="lg" collapsedWidth="0" style={siderStyle}>
-        <div className="demo-logo-vertical" />
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="flex items-center justify-center h-16 text-2xl font-extrabold text-white">
+          <h2>333</h2>
+        </div>
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["4"]}
+          defaultSelectedKeys={["1"]} // Default selected item
+          className="pb-6"
           items={items}
         />
       </Sider>
-      <Layout>
+      <Layout className="min-h-[100vh]">
         <Header
+          className="flex justify-between items-center"
           style={{
             padding: 0,
             background: colorBgContainer,
           }}
-        />
+        >
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: "16px",
+              width: 64,
+              height: 64,
+            }}
+          />
+          <UserDropdown />
+        </Header>
         <Content
           style={{
             margin: "24px 16px 0",
@@ -77,4 +110,5 @@ const OwnerLayout = () => {
     </Layout>
   );
 };
+
 export default OwnerLayout;
