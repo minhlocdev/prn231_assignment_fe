@@ -22,19 +22,45 @@ import {
   convertDateToTimeOnlyString,
   roundToNearestHalfHour,
 } from "../../../utils/helpers/dateFormat";
-import { useCreateBooking } from "../../../utils/services/bookingService";
+import {
+  useCreateBooking,
+  useUpdateBooking,
+} from "../../../utils/services/bookingService";
 
 const { Option } = Select;
 
-const BookingForm = ({ selectedCourt }) => {
+const BookingForm = ({ booking, selectedCourt }) => {
   const { user } = useAuth();
   const [bookingForm] = useForm();
 
   const createBookingMutation = useCreateBooking();
+  const updateBookingMutation = useUpdateBooking();
   const onFinish = (values) => {
+    if (booking) {
+      onUpdate(values);
+    } else {
+      onCreate(values);
+    }
+  };
+  const onUpdate = async (values) => {
+    const param = {
+      timeStart: convertDateToTimeOnlyString(values.timeStart),
+      timeEnd: convertDateToTimeOnlyString(values.timeEnd),
+      date: convertDateToDateOnlyString(values.date),
+      numberOfPlayers: values.numberOfPlayers,
+      sharingMode: values.sharingMode,
+      note: values.note,
+      status: booking.status,
+    };
+    updateBookingMutation.mutate({
+      bookingId: booking.bookingId,
+      updateParam: param,
+    });
+  };
+  const onCreate = async (values) => {
     const param = {
       ...values,
-      courtId: selectedCourt.courtId,
+      courtId: selectedCourt?.courtId,
       timeStart: convertDateToTimeOnlyString(values.timeStart),
       timeEnd: convertDateToTimeOnlyString(values.timeEnd),
       date: convertDateToDateOnlyString(values.date),
@@ -48,13 +74,17 @@ const BookingForm = ({ selectedCourt }) => {
       onFinish={onFinish}
       layout="vertical"
       initialValues={{
-        date: dayjs(new Date()),
-        timeStart: roundToNearestHalfHour(dayjs(new Date())),
-        timeEnd: roundToNearestHalfHour(dayjs().add(1, "hour")),
+        date: booking ? dayjs(booking.date, "YYYY-MM-DD") : dayjs(new Date()),
+        timeStart: booking
+          ? dayjs(`${booking.date} ${booking.timeStart}`)
+          : roundToNearestHalfHour(dayjs(new Date())),
+        timeEnd: booking
+          ? dayjs(`${booking.date} ${booking.timeEnd}`)
+          : roundToNearestHalfHour(dayjs().add(1, "hour")),
         userId: user?.userId,
+        sharingMode: booking ? booking.sharingMode : "public",
+        note: booking ? booking.note : "",
         numberOfPlayers: 2,
-        sharingMode: "public",
-        note: "",
       }}
     >
       {!selectedCourt && (
@@ -200,6 +230,7 @@ const BookingForm = ({ selectedCourt }) => {
 };
 
 BookingForm.propTypes = {
+  booking: PropTypes.object,
   selectedCourt: PropTypes.object,
 };
 

@@ -1,9 +1,11 @@
 import queryString from "query-string";
 import axiosClient from "../../configuration/axiosClient";
 import {
+  DELETE_BOOKING,
   GET_BOOKING,
   GET_BOOKINGS,
   POST_BOOKING,
+  PUT_BOOKING,
 } from "../../constants/endpoints";
 
 export const getBookings = async (
@@ -64,4 +66,22 @@ export const postBookings = async (booking) => {
     isSuccess: response.data.isSuccess,
     message: response.data.message,
   };
+};
+export const updateBookings = async ({ bookingId, updateParam }) => {
+  console.log(updateParam)
+  const response = await axiosClient.put(
+    `${PUT_BOOKING}${bookingId}`,
+    updateParam
+  );
+
+  return {
+    result: response.data.result,
+    isSuccess: response.data.isSuccess,
+    message: response.data.message,
+  };
+};
+export const deleteBooking = async (bookingId) => {
+  const response = await axiosClient.delete(`${DELETE_BOOKING}${bookingId}`);
+
+  return response;
 };

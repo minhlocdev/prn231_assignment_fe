@@ -8,7 +8,6 @@ import Highlighter from "react-highlight-words";
 export const CourtTable = ({ selectedCourt, handleSelectCourt }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
-
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [filterField, setFilterField] = useState("");

@@ -1,5 +1,11 @@
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
-import { getBooking, getBookings, postBookings } from "./queries/bookingQuery";
+import {
+  deleteBooking,
+  getBooking,
+  getBookings,
+  postBookings,
+  updateBookings,
+} from "./queries/bookingQuery";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -66,7 +72,35 @@ export const useCreateBooking = () => {
     },
   });
 };
+export const useUpdateBooking = () => {
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: updateBookings,
+    onSuccess: (data) => {
+      if (data.isSuccess) {
+        notification.success({
+          message: "Update Booking Successful",
+          description: "Go to payment page...!",
+        });
+        navigate(`/payment/${data.result.bookingId}`);
+      } else {
+        notification.error({
+          message: "Update Booking Failed",
+          description: data.message,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error("Update Booking failed:", error);
 
+      notification.error({
+        message: "Update Booking Failed",
+        description:
+          error.response?.data?.message || "An error occurred during Update Booking.",
+      });
+    },
+  });
+};
 export const useFetchBooking = (bookingId) => {
   return useQuery({
     queryKey: ["booking", bookingId],
@@ -74,5 +108,25 @@ export const useFetchBooking = (bookingId) => {
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: true,
     enabled: !!bookingId,
+  });
+};
+
+export const useDeleteBooking = () => {
+  return useMutation({
+    mutationFn: deleteBooking,
+    onSuccess: () => {
+      notification.success({
+        message: "Delete Booking Successful",
+      });
+    },
+    onError: (error) => {
+      console.error("Booking failed:", error);
+
+      notification.error({
+        message: "Booking Failed",
+        description:
+          error.response?.data?.message || "An error occurred during Booking.",
+      });
+    },
   });
 };

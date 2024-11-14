@@ -52,6 +52,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/player/book-field/:bookingId"
+              element={
+                <ProtectedRoute requiredRole="user">
+                  <BookingPage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/player/payment/:bookingId"
