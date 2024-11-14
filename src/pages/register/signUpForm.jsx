@@ -105,7 +105,7 @@ const SignUpForm = () => {
       >
         <Input disabled={isPending} />
       </Form.Item>
-      {theme == "owner" && (
+      {theme == "CourtOwner" && (
         <Form.Item
           name="taxCode"
           label="Tax code"
